@@ -3,10 +3,7 @@ package com.mitos.relationship;
 import com.mitos.relationship.dto.RelationshipDTO;
 import com.mitos.user.User;
 import com.mitos.user.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/relationships")
@@ -47,12 +44,5 @@ public class RelationshipController {
     @PutMapping("/{id}/end")
     public RelationshipDTO endRelationship(@PathVariable Long id) {
         return relationshipService.endRelationship(id);
-    }
-
-    @ExceptionHandler(RelationshipAlreadyExistsException.class)
-    public ResponseEntity<?> handleDuplicate(RelationshipAlreadyExistsException ex) {
-        return ResponseEntity.badRequest().body(
-                Map.of("error", ex.getMessage())
-        );
     }
 }
