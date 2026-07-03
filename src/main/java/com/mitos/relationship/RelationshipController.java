@@ -3,6 +3,9 @@ package com.mitos.relationship;
 import com.mitos.user.User;
 import com.mitos.user.UserRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/relationships")
@@ -28,5 +31,27 @@ public class RelationshipController {
                 .orElseThrow(() -> new RuntimeException("User2 not found"));
 
         return relationshipService.createRequest(user1, user2);
+    }
+
+    @PutMapping("/{id}/accept")
+    public Relationship acceptRelationship(@PathVariable Long id) {
+        return relationshipService.acceptRelationship(id);
+    }
+
+    @PutMapping("/{id}/reject")
+    public Relationship rejectRelationship(@PathVariable Long id) {
+        return relationshipService.rejectRelationship(id);
+    }
+
+    @PutMapping("/{id}/end")
+    public Relationship endRelationship(@PathVariable Long id) {
+        return relationshipService.endRelationship(id);
+    }
+
+    @ExceptionHandler(RelationshipAlreadyExistsException.class)
+    public ResponseEntity<?> handleDuplicate(RelationshipAlreadyExistsException ex) {
+        return ResponseEntity.badRequest().body(
+                Map.of("error", ex.getMessage())
+        );
     }
 }

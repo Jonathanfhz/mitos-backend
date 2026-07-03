@@ -17,14 +17,15 @@ public class Relationship {
     @ManyToOne
     private User userTo;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private RelationshipStatus status;
 
     public Relationship() {}
 
-    public Relationship(User userFrom, User userTo, String type) {
+    public Relationship(User userFrom, User userTo, RelationshipStatus status) {
         this.userFrom = userFrom;
         this.userTo = userTo;
-        this.type = type;
+        this.status = status;
     }
 
     public Long getId() {
@@ -39,8 +40,8 @@ public class Relationship {
         return userTo;
     }
 
-    public String getType() {
-        return type;
+    public RelationshipStatus getStatus() {
+        return status;
     }
 
     public void setUserFrom(User userFrom) {
@@ -51,7 +52,7 @@ public class Relationship {
         this.userTo = userTo;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStatus(RelationshipStatus status) {
+        this.status = status;
     }
 }
