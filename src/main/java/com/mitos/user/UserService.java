@@ -1,6 +1,8 @@
 package com.mitos.user;
 
+import com.mitos.user.dto.UserDTO;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -12,11 +14,26 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserDTO createUser(User user) {
+
+        User savedUser = userRepository.save(user);
+
+        return toDTO(savedUser);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+
+        return userRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private UserDTO toDTO(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
     }
 }

@@ -15,7 +15,7 @@ public class RelationshipService {
         this.relationshipRepository = relationshipRepository;
     }
 
-    public Relationship createRequest(User userFrom, User userTo) {
+    public RelationshipDTO createRequest(User userFrom, User userTo) {
 
         relationshipRepository
                 .findByUserFromIdAndUserToIdOrUserFromIdAndUserToId(
@@ -34,49 +34,57 @@ public class RelationshipService {
                 RelationshipStatus.PENDING
         );
 
-        return relationshipRepository.save(relationship);
+        return toDTO(relationshipRepository.save(relationship));
     }
 
- public Relationship acceptRelationship(Long id) {
+    public RelationshipDTO acceptRelationship(Long id) {
 
-    Relationship relationship = relationshipRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
+        Relationship relationship = relationshipRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
 
-    if (relationship.getStatus() != RelationshipStatus.PENDING) {
-        throw new IllegalStateException("Only PENDING relationships can be accepted");
+        if (relationship.getStatus() != RelationshipStatus.PENDING) {
+            throw new IllegalStateException("Only PENDING relationships can be accepted");
+        }
+
+        relationship.setStatus(RelationshipStatus.ACTIVE);
+
+        return toDTO(relationshipRepository.save(relationship));
     }
 
-    relationship.setStatus(RelationshipStatus.ACTIVE);
+    public RelationshipDTO rejectRelationship(Long id) {
 
-    return relationshipRepository.save(relationship);
-}
+        Relationship relationship = relationshipRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
 
-public Relationship rejectRelationship(Long id) {
+        if (relationship.getStatus() != RelationshipStatus.PENDING) {
+            throw new IllegalStateException("Only PENDING relationships can be rejected");
+        }
 
-    Relationship relationship = relationshipRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
+        relationship.setStatus(RelationshipStatus.REJECTED);
 
-    if (relationship.getStatus() != RelationshipStatus.PENDING) {
-        throw new IllegalStateException("Only PENDING relationships can be rejected");
+        return toDTO(relationshipRepository.save(relationship));
     }
 
-    relationship.setStatus(RelationshipStatus.REJECTED);
+    public RelationshipDTO endRelationship(Long id) {
 
-    return relationshipRepository.save(relationship);
-}
+        Relationship relationship = relationshipRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
 
- public Relationship endRelationship(Long id) {
+        if (relationship.getStatus() != RelationshipStatus.ACTIVE) {
+            throw new IllegalStateException("Only ACTIVE relationships can be ended");
+        }
 
-    Relationship relationship = relationshipRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Relationship not found"));
+        relationship.setStatus(RelationshipStatus.ENDED);
 
-    if (relationship.getStatus() != RelationshipStatus.ACTIVE) {
-        throw new IllegalStateException("Only ACTIVE relationships can be ended");
+        return toDTO(relationshipRepository.save(relationship));
     }
 
-    relationship.setStatus(RelationshipStatus.ENDED);
-
-    return relationshipRepository.save(relationship);
-}
-
+    private RelationshipDTO toDTO(Relationship relationship) {
+        return new RelationshipDTO(
+                relationship.getId(),
+                relationship.getUserFrom().getId(),
+                relationship.getUserTo().getId(),
+                relationship.getStatus()
+        );
+    }
 }

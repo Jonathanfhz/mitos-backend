@@ -1,9 +1,10 @@
 package com.mitos.relationship;
 
+import com.mitos.relationship.dto.RelationshipDTO;
 import com.mitos.user.User;
 import com.mitos.user.UserRepository;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -21,8 +22,8 @@ public class RelationshipController {
     }
 
     @PostMapping("/request")
-    public Relationship createRequest(@RequestParam Long user1Id,
-                                       @RequestParam Long user2Id) {
+    public RelationshipDTO createRequest(@RequestParam Long user1Id,
+                                         @RequestParam Long user2Id) {
 
         User user1 = userRepository.findById(user1Id)
                 .orElseThrow(() -> new RuntimeException("User1 not found"));
@@ -34,17 +35,17 @@ public class RelationshipController {
     }
 
     @PutMapping("/{id}/accept")
-    public Relationship acceptRelationship(@PathVariable Long id) {
+    public RelationshipDTO acceptRelationship(@PathVariable Long id) {
         return relationshipService.acceptRelationship(id);
     }
 
     @PutMapping("/{id}/reject")
-    public Relationship rejectRelationship(@PathVariable Long id) {
+    public RelationshipDTO rejectRelationship(@PathVariable Long id) {
         return relationshipService.rejectRelationship(id);
     }
 
     @PutMapping("/{id}/end")
-    public Relationship endRelationship(@PathVariable Long id) {
+    public RelationshipDTO endRelationship(@PathVariable Long id) {
         return relationshipService.endRelationship(id);
     }
 
