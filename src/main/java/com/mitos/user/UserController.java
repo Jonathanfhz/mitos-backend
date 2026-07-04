@@ -1,6 +1,8 @@
 package com.mitos.user;
 
+import com.mitos.user.dto.CreateUserRequest;
 import com.mitos.user.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDTO createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserDTO createUser(@Valid @RequestBody CreateUserRequest request) {
+        return userService.createUser(request);
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package com.mitos.user;
 
+import com.mitos.user.dto.CreateUserRequest;
 import com.mitos.user.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDTO createUser(User user) {
+    public UserDTO createUser(CreateUserRequest request) {
+
+        User user = new User(
+                request.getName(),
+                request.getEmail()
+        );
 
         User savedUser = userRepository.save(user);
 
