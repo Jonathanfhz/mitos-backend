@@ -2,6 +2,7 @@ package com.mitos.relationship;
 
 import com.mitos.relationship.dto.RelationshipDTO;
 import com.mitos.user.User;
+import com.mitos.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -10,12 +11,21 @@ import java.util.NoSuchElementException;
 public class RelationshipService {
 
     private final RelationshipRepository relationshipRepository;
+    private final UserRepository userRepository;
 
-    public RelationshipService(RelationshipRepository relationshipRepository) {
+    public RelationshipService(RelationshipRepository relationshipRepository,
+                               UserRepository userRepository) {
         this.relationshipRepository = relationshipRepository;
+        this.userRepository = userRepository;
     }
 
-    public RelationshipDTO createRequest(User userFrom, User userTo) {
+    public RelationshipDTO createRequest(Long userFromId, Long userToId) {
+
+        User userFrom = userRepository.findById(userFromId)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        User userTo = userRepository.findById(userToId)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
 
         relationshipRepository
                 .findByUserFromIdAndUserToIdOrUserFromIdAndUserToId(
